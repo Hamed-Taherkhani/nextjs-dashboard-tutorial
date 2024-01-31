@@ -11,6 +11,8 @@ import {
 import { formatCurrency } from './utils';
 
 export async function fetchRevenue() {
+  console.log('fetch revenue');
+
   // Add noStore() here to prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
@@ -25,6 +27,8 @@ export async function fetchRevenue() {
 
     // console.log('Data fetch completed after 3 seconds.');
 
+    console.log(data.rows);
+
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
@@ -33,6 +37,8 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
+  console.log('fetch latest invoices');
+
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -45,6 +51,9 @@ export async function fetchLatestInvoices() {
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
+
+    console.log(latestInvoices);
+
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
@@ -53,6 +62,8 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
+  console.log('fetch card data');
+
   try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
@@ -74,6 +85,13 @@ export async function fetchCardData() {
     const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
     const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
     const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
+
+    console.log({
+      numberOfCustomers,
+      numberOfInvoices,
+      totalPaidInvoices,
+      totalPendingInvoices,
+    });
 
     return {
       numberOfCustomers,
